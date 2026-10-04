@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "recipe": {
+    "name": "gsi-edge-poc",
+    "kind": "script",
+    "bootstrap": [],
+    "build": [],
+    "test": ["./verify.sh"],
+    "start": null,
+    "port": null,
+    "readinessPath": "/",
+    "evidence": [
+      "verify.sh asserts all four POC behaviours against the running containers",
+      "requires gsi-edge and gsi-imgproxy to already be up (host networking; no docker compose plugin on this box)"
+    ]
+  }
+}

@@ -45,6 +45,17 @@ Append one entry to `customers.json`, reload. No code change.
 `renderReady` sends crawlers to the prerenderer. `credit` is contractual footer
 text — leave empty unless the customer signed for it. Never injected at the edge.
 
+## Verify
+
+`verify.sh` asserts every behaviour below against the running containers and exits
+non-zero on the first failure. It is wired into `hermes verify` via
+`.hermes/environment.json`.
+
+```bash
+./verify.sh                # 12 assertions, ~11s
+hermes verify --skip-start # same thing, records the evidence
+```
+
 ## Verified live (not just config-tested)
 
 Every line below was executed against the running containers on this host.
