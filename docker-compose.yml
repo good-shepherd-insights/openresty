@@ -29,7 +29,10 @@ services:
     # Port 8090, not 8080: something else on this host already owns 8080.
     network_mode: host
     environment:
-      IMGPROXY_BIND: ":8090"
+      # LOOPBACK ONLY. imgproxy runs with no signature keys, so every /unsafe/
+      # URL is valid for anyone who can reach the port - bound to 0.0.0.0 it would
+      # be an open image proxy. Verified: LAN address refuses, loopback returns 200.
+      IMGPROXY_BIND: "127.0.0.1:8090"
       IMGPROXY_AUTO_WEBP: "1"
       IMGPROXY_QUALITY: "82"
       IMGPROXY_MAX_SRC_SIZE: 50
