@@ -1,0 +1,42 @@
+services:
+  openresty:
+    image: openresty/openresty:alpine
+    container_name: gsi-edge
+    restart: unless-stopped
+    # The stock alpine image ships no /tmp/nginx-cache and proxy_cache_path only
+    # creates the levels/ subtree, so the entrypoint creates the parent first.
+    entrypoint: ["/bin/sh", "/docker-entrypoint.sh"]
+    command: ["-g", "daemon off;"]
+    # Host networking: the crawler branch reaches the host's renderready at
+    # 127.0.0.1:3305 directly, so that port never needs publishing.
+    # Consequence: no `ports:` block (Docker rejects it under host networking).
+    network_mode: host
+    volumes:
+      - ./nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf:ro
+      - ./customers.json:/etc/nginx/customers.json:ro
+      - ./lua:/etc/nginx/lua:ro
+      - ./docker-entrypoint.sh:/docker-entrypoint.sh:ro
+      - edge-cache:/tmp/nginx-cache
+    environment:
+      CUSTOMERS_FILE: /etc/nginx/customers.json
+      IMGPROXY_UPSTREAM: imgproxy:8080
+      RENDERREADY_UPSTREAM: 127.0.0.1:3305
+
+  imgproxy:
+    image: darthsim/imgproxy:latest
+    container_name: gsi-imgproxy
+    restart: unless-stopped
+    # Port 8090, not 8080: something else on this host already owns 8080.
+    network_mode: host
+    environment:
+      IMGPROXY_BIND: ":8090"
+      IMGPROXY_AUTO_WEBP: "1"
+      IMGPROXY_QUALITY: "82"
+      IMGPROXY_MAX_SRC_SIZE: 50
+      IMGPROXY_SAFETY: "1"
+    volumes:
+      - imgproxy-cache:/var/cache/imgproxy
+
+volumes:
+  edge-cache:
+  imgproxy-cache:

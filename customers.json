@@ -1,0 +1,23 @@
+{
+  "_comment": "Per-customer onboarding is ONE line here plus an nginx reload. No code change.",
+  "_schema": {
+    "hostname": "public hostname the customer pointed at us",
+    "origin": "upstream scheme://host, their real server",
+    "renderReady": "true = send crawler UAs to the prerenderer instead of the origin",
+    "credit": "footer credit text; empty string = no credit line. Contractual only."
+  },
+  "customers": [
+    {
+      "hostname": "r780badk.marylandinsights.com",
+      "origin": "http://127.0.0.1:8504",
+      "renderReady": true,
+      "credit": ""
+    },
+    {
+      "hostname": "poc.test",
+      "origin": "http://127.0.0.1:8504",
+      "renderReady": false,
+      "credit": ""
+    }
+  ]
+}
